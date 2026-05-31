@@ -13,5 +13,7 @@ Create these files following existing patterns:
 2. `test-api/$ARGUMENTS.test.php`
    - Include TestSetup.php, ApiTestHelpers.php
    - Test success, error, and security cases
+3. Update `openapi.yaml` — add the new path, parameters, and response shapes
+4. Update `docs/api-usage.md` if the change affects fetch() patterns, upload limits, or collision-handling
 
 After creating, run the test to verify.

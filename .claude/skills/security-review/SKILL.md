@@ -3,7 +3,6 @@ name: security-review
 description: Review changed code for security issues (path traversal, input validation, etc.)
 allowed-tools: Bash, Read, Grep, Glob
 context: fork
-agent: Explore
 ---
 
 Review the current git diff for security issues specific to this project:

@@ -1,8 +1,8 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
-> **Sync note:** This file is kept in sync with `AGENTS.md`. When you update one, update the other to match.
+> **Sync note:** This file is kept in sync with `CLAUDE.md`. When you update one, update the other to match.
 
 Behavioral defaults plus house conventions. Bias toward caution over speed; on trivial tasks, use judgment.
 

@@ -136,6 +136,20 @@ assertException(function () {
     });
 }, 'PathSecurity::constructSequentialFilePath: invalid directory', PathException::class);
 
+// 11b. PathException message must not leak the internal directory path
+try {
+    PathSecurity::constructSequentialFilePath('/no/such/directory', 'x.txt', function (string $path): void {
+    });
+    echo "FAIL: constructSequentialFilePath: no exception for invalid directory\n";
+    exit(1);
+} catch (PathException $e) {
+    assertEquals(
+        false,
+        str_contains($e->getMessage(), '/no/such/directory'),
+        'PathSecurity::constructSequentialFilePath: exception message does not leak path'
+    );
+}
+
 // 12. Extensionless file: README -> README_1 on collision
 $readmePath = PathSecurity::constructSequentialFilePath($seqDir, 'README', function (string $path): void {
     file_put_contents($path, 'readme');

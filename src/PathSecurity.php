@@ -94,7 +94,7 @@ final class PathSecurity
         $realDir = realpath($directoryPath);
 
         if ($realDir === false || !is_dir($realDir) || !is_writable($realDir)) {
-            throw new PathException("Invalid or unwritable directory: {$directoryPath}");
+            throw new PathException('Invalid or unwritable directory.');
         }
 
         $realDir = rtrim($realDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -107,7 +107,7 @@ final class PathSecurity
         $fp = fopen($lockFile, 'c');
 
         if ($fp === false) {
-            throw new PathException("Failed to create lock file in: {$directoryPath}");
+            throw new PathException('Failed to create lock file.');
         }
 
         flock($fp, LOCK_EX);

@@ -210,8 +210,8 @@ paths:
         request returns a 400 error.
 
         **Filename restrictions**: Reserved Windows names (`CON`, `PRN`, `AUX`,
-        `NUL`, `COM1`–`COM9`, `LPT1`–`LPT9`), null bytes, and path separators
-        are rejected.
+        `NUL`, `COM1`–`COM9`, `LPT1`–`LPT9`), null bytes, path separators, and
+        the internal lock filename (`.seq_lock`) are rejected.
       requestBody:
         required: true
         content:

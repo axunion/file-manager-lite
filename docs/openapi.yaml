@@ -99,9 +99,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StatusSuccess"
+                allOf:
+                  - $ref: "#/components/schemas/StatusSuccess"
+                  - type: object
+                    required:
+                      - filename
+                    properties:
+                      filename:
+                        type: string
+                        description: >
+                          Final filename as stored on disk (basename only). May differ
+                          from the original name if sequential naming was applied.
               example:
                 status: success
+                filename: report.pdf
         "400":
           $ref: "#/components/responses/BadRequest"
         "405":

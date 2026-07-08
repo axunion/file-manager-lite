@@ -74,11 +74,13 @@ const form = new FormData();
 form.append("path", "documents");  // target directory (empty string for root)
 form.append("file", fileInput.files[0]);
 
-await apiFetch(`${API_BASE}/upload/`, {
+const data = await apiFetch(`${API_BASE}/upload/`, {
   method: "POST",
   body: form,
   // !! Do not set Content-Type here — let the browser handle it
 });
+// data.filename: string — actual filename saved on disk
+// (may differ from the original name if a collision was resolved)
 ```
 
 ---

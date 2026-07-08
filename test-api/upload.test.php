@@ -78,7 +78,10 @@ echo "  - Upload JPEG file... ";
 $jpegFile = ApiTestHelpers::createTempImage(100, 100, 'jpeg');
 $response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $jpegFile]);
 ApiTestHelpers::assertSuccess($response, 'JPEG upload');
-ApiTestHelpers::registerUploadedFile(DATA_DIR, basename($jpegFile));
+ApiTestHelpers::assertArrayHasKey('filename', $response['json'], 'Upload response has filename');
+$storedName = $response['json']['filename'];
+ApiTestHelpers::assertTrue(file_exists(DATA_DIR . '/' . $storedName), 'Stored file exists under returned filename');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $storedName);
 echo "OK\n";
 
 // Test 9: Upload PNG file (success)

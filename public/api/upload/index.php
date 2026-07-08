@@ -20,9 +20,9 @@ try {
     $targetDir = resolvePath($subPath);
 
     $validator->validate($_FILES['file']);
-    $validator->uploadFile($targetDir, $_FILES['file']);
+    $storedPath = $validator->uploadFile($targetDir, $_FILES['file']);
 
-    sendSuccess();
+    sendSuccess(['filename' => basename($storedPath)]);
 } catch (Throwable $e) {
     handleError($e);
 }

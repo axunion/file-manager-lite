@@ -100,7 +100,79 @@ ApiTestHelpers::assertSuccess($response, 'PDF upload');
 ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
 echo "OK\n";
 
-// Test 11: Reject wrong MIME type (text file disguised with .jpg extension)
+// Test 11: Upload WebP file (success)
+echo "  - Upload WebP file... ";
+$webpFile = ApiTestHelpers::createTempWebp();
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $webpFile]);
+ApiTestHelpers::assertSuccess($response, 'WebP upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 12: Upload MP4 file (success)
+echo "  - Upload MP4 file... ";
+$mp4File = ApiTestHelpers::createTempVideo('mp4');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $mp4File]);
+ApiTestHelpers::assertSuccess($response, 'MP4 upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 13: Upload WebM file (success)
+echo "  - Upload WebM file... ";
+$webmFile = ApiTestHelpers::createTempVideo('webm');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $webmFile]);
+ApiTestHelpers::assertSuccess($response, 'WebM upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 14: Upload MOV file (success)
+echo "  - Upload MOV file... ";
+$movFile = ApiTestHelpers::createTempVideo('mov');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $movFile]);
+ApiTestHelpers::assertSuccess($response, 'MOV upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 15: Upload ZIP file (success)
+echo "  - Upload ZIP file... ";
+$zipFile = ApiTestHelpers::createTempZip();
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $zipFile]);
+ApiTestHelpers::assertSuccess($response, 'ZIP upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 16: Upload MP3 file (success)
+echo "  - Upload MP3 file... ";
+$mp3File = ApiTestHelpers::createTempAudio('mp3');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $mp3File]);
+ApiTestHelpers::assertSuccess($response, 'MP3 upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 17: Upload WAV file (success)
+echo "  - Upload WAV file... ";
+$wavFile = ApiTestHelpers::createTempAudio('wav');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $wavFile]);
+ApiTestHelpers::assertSuccess($response, 'WAV upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 18: Upload OGG file (success)
+echo "  - Upload OGG file... ";
+$oggFile = ApiTestHelpers::createTempAudio('ogg');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $oggFile]);
+ApiTestHelpers::assertSuccess($response, 'OGG upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 19: Upload M4A file (success)
+echo "  - Upload M4A file... ";
+$m4aFile = ApiTestHelpers::createTempAudio('m4a');
+$response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $m4aFile]);
+ApiTestHelpers::assertSuccess($response, 'M4A upload');
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
+echo "OK\n";
+
+// Test 20: Reject wrong MIME type (text file disguised with .jpg extension)
 echo "  - Reject wrong MIME type... ";
 $fakeImage = ApiTestHelpers::createTempFile('This is plain text, not an image.', 'jpg');
 $response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $fakeImage]);

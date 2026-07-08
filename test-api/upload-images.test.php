@@ -236,4 +236,29 @@ unlink($png1);
 unlink($jpeg2);
 echo "OK\n";
 
+// Test 11: Upload WebP, HEIC, and HEIF images (mobile formats)
+echo "  - Upload WebP/HEIC/HEIF images... ";
+$webp1 = ApiTestHelpers::createTempWebp();
+$heic1 = ApiTestHelpers::createTempHeic('heic');
+$heif1 = ApiTestHelpers::createTempHeic('heif');
+
+$response = ApiTestHelpers::postMultipart(
+    '/api/upload-images/',
+    ['path' => ''],
+    ['images' => [$webp1, $heic1, $heif1]]
+);
+
+ApiTestHelpers::assertSuccess($response, 'WebP/HEIC/HEIF uploaded');
+$uploadedFiles = $response['json']['files'];
+ApiTestHelpers::assertEquals(3, count($uploadedFiles), '3 files uploaded');
+
+foreach ($uploadedFiles as $file) {
+    ApiTestHelpers::registerUploadedFile(DATA_DIR, $file);
+}
+
+unlink($webp1);
+unlink($heic1);
+unlink($heif1);
+echo "OK\n";
+
 echo "All upload-images endpoint tests passed!\n";

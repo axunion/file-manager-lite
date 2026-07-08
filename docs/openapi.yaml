@@ -72,13 +72,15 @@ paths:
     post:
       summary: Upload a single file
       description: |
-        Uploads a single file (JPEG, PNG, or PDF) to the specified directory.
+        Uploads a single file (image, PDF, video, audio, or zip archive) to the specified directory.
 
         If the uploaded filename already exists at the destination, a sequential
         suffix is appended automatically (e.g. `file_1.pdf`).
 
         **Limits**: 100 MB maximum file size.
-        **Allowed types**: `image/jpeg`, `image/png`, `application/pdf`.
+        **Allowed types**: `image/jpeg`, `image/png`, `image/webp`, `application/pdf`,
+        `video/mp4`, `video/webm`, `video/quicktime`, `application/zip`,
+        `audio/mpeg`, `audio/ogg`, `audio/mp4`, `audio/x-m4a`, `audio/wav`, `audio/x-wav`.
         MIME type is verified by content analysis — file extension is not trusted.
       requestBody:
         required: true
@@ -127,7 +129,7 @@ paths:
     post:
       summary: Batch image upload
       description: |
-        Uploads multiple image files (JPEG or PNG) to the specified directory.
+        Uploads multiple image files (JPEG, PNG, WebP, HEIC, or HEIF) to the specified directory.
 
         If any uploaded filename already exists at the destination, a sequential
         suffix is appended automatically. The response returns the final filenames
@@ -141,7 +143,7 @@ paths:
         - Maximum 10 MB per file
         - Maximum 30 MB total per request
 
-        **Allowed types**: `image/jpeg`, `image/png`.
+        **Allowed types**: `image/jpeg`, `image/png`, `image/webp`, `image/heic`, `image/heif`.
         MIME type is verified by content analysis — file extension is not trusted.
       requestBody:
         required: true

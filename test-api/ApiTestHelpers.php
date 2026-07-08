@@ -380,6 +380,120 @@ final class ApiTestHelpers
         return $tmpFile;
     }
 
+    /**
+     * Create a minimal valid WebP temporary file.
+     */
+    public static function createTempWebp(): string
+    {
+        $tmpFile = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'api_test_' . uniqid('', true) . '.webp';
+
+        // Minimal RIFF/WEBP container with an empty VP8 chunk
+        $webp = 'RIFF' . pack('V', 20) . 'WEBP' . 'VP8 ' . pack('V', 8) . str_repeat("\x00", 8);
+
+        file_put_contents($tmpFile, $webp);
+        self::registerTempFile($tmpFile);
+
+        return $tmpFile;
+    }
+
+    /**
+     * Create a minimal valid HEIC/HEIF temporary file.
+     */
+    public static function createTempHeic(string $format = 'heic'): string
+    {
+        $tmpFile = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'api_test_' . uniqid('', true) . '.' . $format;
+
+        // Minimal ISO-BMFF ftyp box with the HEIC/HEIF major brand
+        $majorBrand = $format === 'heic' ? 'heic' : 'mif1';
+        $heic = pack('N', 24) . 'ftyp' . $majorBrand . pack('N', 0) . 'mif1' . 'heic';
+
+        file_put_contents($tmpFile, $heic);
+        self::registerTempFile($tmpFile);
+
+        return $tmpFile;
+    }
+
+    /**
+     * Create a minimal valid audio temporary file (mp3, wav, ogg, or m4a).
+     */
+    public static function createTempAudio(string $format = 'mp3'): string
+    {
+        $tmpFile = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'api_test_' . uniqid('', true) . '.' . $format;
+
+        if ($format === 'mp3') {
+            // Minimal MPEG frame sync header (MPEG1 Layer3, no CRC)
+            $audio = "\xFF\xFB\x90\x00" . str_repeat("\x00", 32);
+        } elseif ($format === 'wav') {
+            // Minimal RIFF/WAVE header with a PCM fmt chunk
+            $audio = 'RIFF' . pack('V', 36) . 'WAVE' . 'fmt ' . pack('V', 16)
+                . pack('v', 1) . pack('v', 1) . pack('V', 44100) . pack('V', 88200)
+                . pack('v', 2) . pack('v', 16) . 'data' . pack('V', 0);
+        } elseif ($format === 'ogg') {
+            // Minimal Ogg page header with a Vorbis identification packet
+            $audio = 'OggS' . "\x00\x02" . str_repeat("\x00", 20) . "\x01\x1e" . "\x01vorbis" . str_repeat("\x00", 20);
+        } else {
+            // m4a: ISO-BMFF ftyp box with the M4A major brand
+            $audio = pack('N', 24) . 'ftyp' . 'M4A ' . pack('N', 0) . 'M4A ' . 'mp42';
+        }
+
+        file_put_contents($tmpFile, $audio);
+        self::registerTempFile($tmpFile);
+
+        return $tmpFile;
+    }
+
+    /**
+     * Create a minimal valid video temporary file (mp4, webm, or mov).
+     */
+    public static function createTempVideo(string $format = 'mp4'): string
+    {
+        $tmpFile = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'api_test_' . uniqid('', true) . '.' . $format;
+
+        if ($format === 'mp4') {
+            // Minimal ISO-BMFF ftyp box with an "isom" major brand
+            $video = pack('N', 24) . 'ftyp' . 'isom' . pack('N', 512) . 'isom' . 'mp42';
+        } elseif ($format === 'mov') {
+            // Minimal ISO-BMFF ftyp box with the QuickTime "qt  " major brand
+            $video = pack('N', 20) . 'ftyp' . 'qt  ' . pack('N', 512) . 'qt  ';
+        } else {
+            // Minimal EBML header with a "webm" DocType element
+            $docType = 'webm';
+            $docTypeElem = "\x42\x82" . chr(0x80 | strlen($docType)) . $docType;
+            $video = "\x1A\x45\xDF\xA3" . chr(0x80 | strlen($docTypeElem)) . $docTypeElem . str_repeat("\x00", 16);
+        }
+
+        file_put_contents($tmpFile, $video);
+        self::registerTempFile($tmpFile);
+
+        return $tmpFile;
+    }
+
+    /**
+     * Create a minimal valid empty zip temporary file.
+     */
+    public static function createTempZip(): string
+    {
+        $tmpFile = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'api_test_' . uniqid('', true) . '.zip';
+
+        // Minimal empty archive: End Of Central Directory record only
+        $zip = "PK\x05\x06" . str_repeat("\x00", 18);
+
+        file_put_contents($tmpFile, $zip);
+        self::registerTempFile($tmpFile);
+
+        return $tmpFile;
+    }
+
     private static function ensureShutdownRegistered(): void
     {
         if (!self::$shutdownRegistered) {

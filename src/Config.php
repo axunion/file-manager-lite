@@ -36,21 +36,35 @@ final class Config
 
     /**
      * Allowed MIME types for single file uploads.
-     * Supports JPEG images, PNG images, and PDF documents.
+     * Supports images, PDF documents, common video/audio formats, and zip archives.
      */
     public const SINGLE_UPLOAD_ALLOWED_TYPES = [
         'image/jpeg',
         'image/png',
+        'image/webp',
         'application/pdf',
+        'video/mp4',
+        'video/webm',
+        'video/quicktime',
+        'application/zip',
+        'audio/mpeg',
+        'audio/ogg',
+        'audio/mp4',
+        'audio/x-m4a',
+        'audio/wav',
+        'audio/x-wav',
     ];
 
     /**
      * Allowed MIME types for batch image uploads.
-     * Only JPEG and PNG images are supported.
+     * Includes JPEG, PNG, WebP, and the HEIC/HEIF formats used by mobile cameras.
      */
     public const BATCH_UPLOAD_ALLOWED_TYPES = [
         'image/jpeg',
         'image/png',
+        'image/webp',
+        'image/heic',
+        'image/heif',
     ];
 
     /**

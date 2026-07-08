@@ -89,7 +89,7 @@ echo "  - Upload PNG file... ";
 $pngFile = ApiTestHelpers::createTempImage(100, 100, 'png');
 $response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $pngFile]);
 ApiTestHelpers::assertSuccess($response, 'PNG upload');
-ApiTestHelpers::registerUploadedFile(DATA_DIR, basename($pngFile));
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
 echo "OK\n";
 
 // Test 10: Upload PDF file (success — /upload accepts pdf, /upload-images does not)
@@ -97,7 +97,7 @@ echo "  - Upload PDF file... ";
 $pdfFile = ApiTestHelpers::createTempPdf();
 $response = ApiTestHelpers::postMultipart('/api/upload/', ['path' => ''], ['file' => $pdfFile]);
 ApiTestHelpers::assertSuccess($response, 'PDF upload');
-ApiTestHelpers::registerUploadedFile(DATA_DIR, basename($pdfFile));
+ApiTestHelpers::registerUploadedFile(DATA_DIR, $response['json']['filename']);
 echo "OK\n";
 
 // Test 11: Reject wrong MIME type (text file disguised with .jpg extension)

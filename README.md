@@ -45,12 +45,12 @@ The repository uses generic directory names (`api/`) that are decoupled from the
 
 ```
 Repository    →  Server (example)
-public/api/   →  /home/user/public_html/my-app/api/   (URL: /my-app/api/)
-src/          →  /home/user/src/                       (not web-accessible)
+public/       →  /home/user/public_html/my-app/   (endpoint URL: /my-app/api/)
+src/          →  /home/user/src/                  (not web-accessible)
 ```
 
 `.htaccess` files are co-located inside each deployed directory so they are included automatically:
-- `public/api/.htaccess` — HTTPS redirect, CORS headers, compression, disables directory listing
+- `public/.htaccess` — HTTPS redirect, compression, disables directory listing
 - `src/.htaccess` — blocks all HTTP access (`Require all denied`)
 
 > **Important**: if `SRC_DIR` is inside the web server's document root, verify that `src/.htaccess` is deployed and that your Apache configuration allows `.htaccess` overrides (`AllowOverride All`).
@@ -65,9 +65,9 @@ Deployment is triggered automatically on push to `main`. Configure these reposit
 | `FTP_USERNAME` | FTP username | `user@example.com` |
 | `FTP_PASSWORD` | FTP password | — |
 | `SRC_DIR` | Server path for `src/` | `/home/user/src/` |
-| `PUBLIC_DIR` | Server path for `public/api/` | `/home/user/public_html/my-app/api/` |
+| `PUBLIC_DIR` | Server path for `public/` | `/home/user/public_html/my-app/` |
 
-`PUBLIC_DIR` determines the URL path of the API. `data/` and `trash/` directories are created automatically at runtime beside the `api/` directory.
+The whole `public/` directory is uploaded into `PUBLIC_DIR`, so the API URL prefix is `<URL of PUBLIC_DIR>/api/`. `data/` and `trash/` directories are created automatically at runtime beside the `api/` directory (inside `PUBLIC_DIR`).
 
 A manual dry-run is available under **Actions → Deploy → Run workflow** (dry-run defaults to `true`).
 

@@ -155,7 +155,7 @@ const data = await apiFetch(`${API_BASE}/delete/`, {
 
 ```js
 // POST /move/
-// Filename conflicts are auto-resolved with sequential naming (e.g. "file (1).txt").
+// Filename conflicts are auto-resolved with sequential naming (e.g. "file_1.txt").
 
 const data = await apiFetch(`${API_BASE}/move/`, {
   method: "POST",
@@ -213,8 +213,15 @@ form.append("images[]", file2);
 
 | Endpoint | On filename conflict |
 |----------|---------------------|
-| `/upload/` | Auto-renames with sequential suffix (`file (1).jpg`) |
+| `/upload/` | Auto-renames with sequential suffix (`file_1.jpg`) |
 | `/upload-images/` | Auto-renames with sequential suffix |
 | `/move/` | Auto-renames with sequential suffix |
 | `/delete/` | Auto-renames with sequential suffix (in trash) |
 | `/rename/` | Returns **400 error** — you must choose a different name |
+
+### Extensions are lowercased on store
+
+Whenever a file is stored at a new location (`/upload/`, `/upload-images/`,
+`/move/`, `/delete/`), its extension is normalized to lowercase:
+`Photo.JPG` is saved as `Photo.jpg`. Use the `filename` / `files` field of
+the response to get the actual stored name.

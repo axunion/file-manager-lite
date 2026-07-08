@@ -15,6 +15,11 @@ info:
     - Empty string `""` refers to the root data directory.
     - Use a `trash/` prefix in `path` (list endpoint only) to reference the trash directory.
 
+    **Filename normalization**: whenever a file is stored at a new location
+    (upload, upload-images, move, delete), the extension is lowercased
+    (`Photo.JPG` → `Photo.jpg`) and name conflicts are resolved with a
+    sequential `_N` suffix (`file.pdf` → `file_1.pdf`).
+
 paths:
   /list/:
     get:
@@ -70,7 +75,7 @@ paths:
         Uploads a single file (JPEG, PNG, or PDF) to the specified directory.
 
         If the uploaded filename already exists at the destination, a sequential
-        suffix is appended automatically (e.g. `file (1).pdf`).
+        suffix is appended automatically (e.g. `file_1.pdf`).
 
         **Limits**: 100 MB maximum file size.
         **Allowed types**: `image/jpeg`, `image/png`, `application/pdf`.
@@ -188,7 +193,7 @@ paths:
                 files:
                   - photo1.jpg
                   - photo2.jpg
-                  - photo2 (1).jpg
+                  - photo2_1.jpg
         "400":
           $ref: "#/components/responses/BadRequest"
         "405":
@@ -254,7 +259,7 @@ paths:
         is not permanently removed.
 
         If a file with the same name already exists in trash, a sequential suffix
-        is appended automatically (e.g. `file (1).txt`). The `filename` field in
+        is appended automatically (e.g. `file_1.txt`). The `filename` field in
         the response reflects the final name in trash.
       requestBody:
         required: true
@@ -298,7 +303,7 @@ paths:
         directory.
 
         If the filename already exists at the destination, a sequential suffix is
-        appended automatically (e.g. `file (1).txt`). The `filename` field in the
+        appended automatically (e.g. `file_1.txt`). The `filename` field in the
         response reflects the final name at the destination.
 
         Both `path` and `destinationPath` must resolve within the data directory.

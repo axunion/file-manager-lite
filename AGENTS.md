@@ -100,7 +100,7 @@ try {
 }
 ```
 
-Current endpoints (list, upload, upload-images, rename, delete, move) are specified in `openapi.yaml`.
+Current endpoints (list, upload, upload-images, rename, delete, move) are specified in `docs/openapi.yaml`.
 
 ## Adding New Code
 
@@ -110,7 +110,7 @@ Current endpoints (list, upload, upload-images, rename, delete, move) are specif
 
 **New tests**: Unit tests in `test/{ClassName}.test.php`, API tests in `test-api/{endpoint-name}.test.php`. Always test success, error, and path-traversal cases. Use `test/TestHelpers.php` for unit test setup and `test-api/ApiTestHelpers.php` + `test-api/TestSetup.php` for API tests.
 
-**API spec**: Update `openapi.yaml` in the same commit whenever you add or modify an endpoint (parameters, response shape, error conditions, or constraints). Also update `docs/api-usage.md` if the change affects the fetch() patterns, upload limits, or collision-handling behaviour documented there.
+**API spec**: Update `docs/openapi.yaml` in the same commit whenever you add or modify an endpoint (parameters, response shape, error conditions, or constraints). Also update `docs/api-usage.md` if the change affects the fetch() patterns, upload limits, or collision-handling behaviour documented there.
 
 ## Code Structure
 

@@ -7,6 +7,8 @@ declare(strict_types=1);
  */
 final class PathSecurity
 {
+    private const LOCK_FILENAME = '.seq_lock';
+
     /**
      * Resolve a user-supplied path within a given base directory safely.
      *
@@ -59,6 +61,10 @@ final class PathSecurity
             throw new ValidationException("The file name cannot be empty.");
         }
 
+        if ($fileName === self::LOCK_FILENAME) {
+            throw new ValidationException("The file name '{$fileName}' is reserved for internal use.");
+        }
+
         $length = function_exists('mb_strlen') ? mb_strlen($fileName, 'UTF-8') : strlen($fileName);
 
         if ($length > 255) {
@@ -103,7 +109,7 @@ final class PathSecurity
         $extPart   = $extension === '' ? '' : '.' . strtolower($extension);
         $candidate = $realDir . $baseName . $extPart;
 
-        $lockFile = $realDir . '.seq_lock';
+        $lockFile = $realDir . self::LOCK_FILENAME;
         $fp = fopen($lockFile, 'c');
 
         if ($fp === false) {

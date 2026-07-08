@@ -91,6 +91,11 @@ assertException(function () {
     PathSecurity::validateFileName('name ');
 }, 'PathSecurity::validateFileName: trailing space');
 
+// 9b. Reserved internal lock filename cannot be used as a user-facing name
+assertException(function () {
+    PathSecurity::validateFileName('.seq_lock');
+}, 'PathSecurity::validateFileName: reserved lock filename', ValidationException::class);
+
 // ---------- PathSecurity::constructSequentialFilePath Tests ----------
 
 // Setup temporary directory for sequential tests
@@ -130,13 +135,7 @@ assertEquals(
     'PathSecurity::constructSequentialFilePath: third file'
 );
 
-// 11. Invalid directory (non-existent)
-assertException(function () {
-    PathSecurity::constructSequentialFilePath('/no/such/directory', 'x.txt', function (string $path): void {
-    });
-}, 'PathSecurity::constructSequentialFilePath: invalid directory', PathException::class);
-
-// 11b. PathException message must not leak the internal directory path
+// 11. Invalid directory (non-existent): throws PathException without leaking the path
 try {
     PathSecurity::constructSequentialFilePath('/no/such/directory', 'x.txt', function (string $path): void {
     });

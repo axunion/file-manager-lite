@@ -74,6 +74,18 @@ assertEquals('file2.txt', $natItems[1]->name, 'Natural sort: file2 second');
 assertEquals('file10.txt', $natItems[2]->name, 'Natural sort: file10 last');
 rrmdir($natDir);
 
+// Hidden (dot-prefixed) entries are skipped
+$hiddenDir = sys_get_temp_dir() . '/dir_hidden_' . uniqid();
+mkdir($hiddenDir, 0777, true);
+file_put_contents($hiddenDir . '/visible.txt', 'shown');
+file_put_contents($hiddenDir . '/.seq_lock', '');
+file_put_contents($hiddenDir . '/.gitkeep', '');
+mkdir($hiddenDir . '/.hidden-dir', 0777, true);
+$hiddenItems = DirectoryScanner::scan($hiddenDir);
+assertEquals(1, count($hiddenItems), 'DirectoryScanner::scan: hidden entries excluded');
+assertEquals('visible.txt', $hiddenItems[0]->name, 'Only visible file returned');
+rrmdir($hiddenDir);
+
 // Symlinks are skipped
 $symlinkBase = sys_get_temp_dir() . '/dir_sym_' . uniqid();
 mkdir($symlinkBase, 0777, true);

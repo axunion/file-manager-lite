@@ -66,6 +66,11 @@ final class DirectoryScanner
                 continue;
             }
 
+            // Skip hidden entries (e.g. .seq_lock, .gitkeep)
+            if (str_starts_with($info->getFilename(), '.')) {
+                continue;
+            }
+
             if ($info->isDir()) {
                 $items[] = new DirectoryItem(
                     ItemType::DIRECTORY,

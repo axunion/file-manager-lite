@@ -127,9 +127,10 @@ final class PathSecurity
 
             return realpath($candidate) ?: $candidate;
         } finally {
+            // The lock file is intentionally left in place: unlinking it would
+            // let a concurrent process lock a fresh inode and break serialization.
             flock($fp, LOCK_UN);
             fclose($fp);
-            @unlink($lockFile);
         }
     }
 }

@@ -57,7 +57,7 @@ final class Config
      * Enable CORS (Cross-Origin Resource Sharing) headers.
      * Set to true to allow cross-origin requests from web applications.
      */
-    public const ENABLE_CORS = false;
+    public const ENABLE_CORS = true;
 
     /**
      * Allowed origins for CORS requests.

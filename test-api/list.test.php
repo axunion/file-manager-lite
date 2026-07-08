@@ -74,6 +74,12 @@ ApiTestHelpers::assertArrayHasKey('list', $response['json'], 'Trash response has
 @unlink($trashTestFile);
 echo "OK\n";
 
+// Test 8: Reject array path parameter with 400 (not 500)
+echo "  - Reject array path parameter... ";
+$response = ApiTestHelpers::get('/api/list/', ['path' => ['x']]);
+ApiTestHelpers::assertError($response, 400, 'Array path parameter rejected');
+echo "OK\n";
+
 // Test 9: Reject POST method (list is GET-only)
 echo "  - Reject POST method... ";
 $response = ApiTestHelpers::post('/api/list/', ['path' => '']);

@@ -151,7 +151,14 @@ function resolvePathWithTrash(string $userPath): string
 // Safe input retrieval
 function getInput(int $type, string $key, mixed $default = null): mixed
 {
-    return filter_input($type, $key, FILTER_UNSAFE_RAW) ?? $default;
+    $value = filter_input($type, $key, FILTER_UNSAFE_RAW);
+
+    // filter_input() returns false for non-scalar values (e.g. array parameters)
+    if ($value === false) {
+        throw new ValidationException("Invalid value for parameter '{$key}'.");
+    }
+
+    return $value ?? $default;
 }
 
 // JSON response helpers

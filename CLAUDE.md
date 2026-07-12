@@ -55,7 +55,14 @@ php test-api/run-all.php
 php test-api/list.test.php
 ```
 
-No build or lint process - pure PHP.
+### Static analysis
+```bash
+# PHPStan level 8 (dev/CI only — nothing is deployed to the server)
+composer install
+vendor/bin/phpstan analyse --memory-limit=512M
+```
+
+No build process - pure PHP at runtime.
 
 ## Architecture
 

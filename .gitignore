@@ -10,6 +10,9 @@ public/trash/*
 # Server-local configuration (placed manually on the server)
 config.local.php
 
+# Composer (dev tooling only, never deployed)
+/vendor/
+
 # Logs
 logs
 *.log

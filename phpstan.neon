@@ -1,0 +1,14 @@
+parameters:
+    level: 8
+    phpVersion: 80100
+    paths:
+        - src
+        - public
+        - test
+        - test-api
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    dynamicConstantNames:
+        - API_DATA_DIR
+        - API_TRASH_DIR
+        - Config::ENABLE_CORS

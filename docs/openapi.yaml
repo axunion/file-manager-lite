@@ -20,6 +20,10 @@ info:
     (`Photo.JPG` → `Photo.jpg`) and name conflicts are resolved with a
     sequential `_N` suffix (`file.pdf` → `file_1.pdf`).
 
+    **Filename restrictions**: names beginning with a dot (hidden files,
+    e.g. `.htaccess`) are rejected wherever a filename is supplied
+    (upload, upload-images, rename, move, delete).
+
 paths:
   /list/:
     get:
@@ -213,7 +217,7 @@ paths:
 
         **Filename restrictions**: Reserved Windows names (`CON`, `PRN`, `AUX`,
         `NUL`, `COM1`–`COM9`, `LPT1`–`LPT9`), null bytes, path separators, and
-        the internal lock filename (`.seq_lock`) are rejected.
+        names beginning with a dot (hidden files, e.g. `.htaccess`) are rejected.
       requestBody:
         required: true
         content:

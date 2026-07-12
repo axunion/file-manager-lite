@@ -61,8 +61,8 @@ final class PathSecurity
             throw new ValidationException("The file name cannot be empty.");
         }
 
-        if ($fileName === self::LOCK_FILENAME) {
-            throw new ValidationException("The file name '{$fileName}' is reserved for internal use.");
+        if (str_starts_with($fileName, '.')) {
+            throw new ValidationException('The file name must not begin with a dot.');
         }
 
         $length = function_exists('mb_strlen') ? mb_strlen($fileName, 'UTF-8') : strlen($fileName);

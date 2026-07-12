@@ -96,6 +96,19 @@ assertException(function () {
     PathSecurity::validateFileName('.seq_lock');
 }, 'PathSecurity::validateFileName: reserved lock filename', ValidationException::class);
 
+// 9c. Names beginning with a dot are rejected (would create hidden files,
+// e.g. an .htaccess inside the web-accessible data directory)
+assertException(function () {
+    PathSecurity::validateFileName('.htaccess');
+}, 'PathSecurity::validateFileName: leading dot (.htaccess)', ValidationException::class);
+assertException(function () {
+    PathSecurity::validateFileName('.hidden');
+}, 'PathSecurity::validateFileName: leading dot (.hidden)', ValidationException::class);
+
+// 9d. Interior dots remain valid
+PathSecurity::validateFileName('name.with.dots.txt');
+echo "PASS: PathSecurity::validateFileName: interior dots valid\n";
+
 // ---------- PathSecurity::constructSequentialFilePath Tests ----------
 
 // Setup temporary directory for sequential tests

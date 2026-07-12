@@ -12,7 +12,7 @@ require_once __DIR__ . '/../src/bootstrap.php';
 // Setup temporary directory
 $dir = sys_get_temp_dir() . '/rename_test_' . uniqid();
 mkdir($dir, 0777, true);
-$realDir = realpath($dir);
+$realDir = realpath($dir) ?: $dir;
 
 // Test Case 1: File Renaming
 // Create initial file

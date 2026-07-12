@@ -69,24 +69,16 @@ if (!defined('API_DATA_DIR') || !defined('API_TRASH_DIR')) {
         }
     }
 
-    if (!defined('API_DATA_DIR')) {
-        define('API_DATA_DIR', $dataDirResolved);
-    }
-
-    if (!defined('API_TRASH_DIR')) {
-        define('API_TRASH_DIR', $trashDirResolved);
-    }
-
     // Check directory configuration (skip in test mode)
     if (!defined('TESTING_MODE')) {
         $errors = [];
 
-        if (API_DATA_DIR === false) {
-            $errors[] = 'Data directory not found or not accessible: ' . ($dataDir);
+        if ($dataDirResolved === false) {
+            $errors[] = 'Data directory not found or not accessible: ' . $dataDir;
         }
 
-        if (API_TRASH_DIR === false) {
-            $errors[] = 'Trash directory not found or not accessible: ' . ($trashDir);
+        if ($trashDirResolved === false) {
+            $errors[] = 'Trash directory not found or not accessible: ' . $trashDir;
         }
 
         if (!empty($errors)) {
@@ -96,6 +88,14 @@ if (!defined('API_DATA_DIR') || !defined('API_TRASH_DIR')) {
             echo json_encode(['status' => 'error', 'message' => 'Server configuration error.']);
             exit;
         }
+    }
+
+    if (!defined('API_DATA_DIR')) {
+        define('API_DATA_DIR', $dataDirResolved === false ? '' : $dataDirResolved);
+    }
+
+    if (!defined('API_TRASH_DIR')) {
+        define('API_TRASH_DIR', $trashDirResolved === false ? '' : $trashDirResolved);
     }
 }
 
@@ -168,6 +168,9 @@ function handleCors(): void
 }
 
 // HTTP method validation
+/**
+ * @param list<string> $allowedMethods
+ */
 function validateMethod(array $allowedMethods): void
 {
     if (!in_array($_SERVER['REQUEST_METHOD'], $allowedMethods, true)) {
@@ -188,7 +191,7 @@ function resolvePathWithTrash(string $userPath): string
 {
     $segments = explode('/', trim($userPath, '/'));
 
-    if (isset($segments[0]) && $segments[0] === 'trash') {
+    if ($segments[0] === 'trash') {
         $base = API_TRASH_DIR;
         $path = isset($segments[1]) ? implode('/', array_slice($segments, 1)) : '';
         return PathSecurity::resolveSafePath($base, $path);
@@ -198,7 +201,11 @@ function resolvePathWithTrash(string $userPath): string
 }
 
 // Safe input retrieval
-function getInput(int $type, string $key, mixed $default = null): mixed
+/**
+ * @param INPUT_GET|INPUT_POST $type
+ * @return ($default is string ? string : ?string)
+ */
+function getInput(int $type, string $key, ?string $default = null): ?string
 {
     $value = filter_input($type, $key, FILTER_UNSAFE_RAW);
 
@@ -211,6 +218,9 @@ function getInput(int $type, string $key, mixed $default = null): mixed
 }
 
 // JSON response helpers
+/**
+ * @param array<string, mixed> $data
+ */
 function sendSuccess(array $data = [], int $code = 200): void
 {
     http_response_code($code);

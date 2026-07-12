@@ -17,6 +17,9 @@ final class UploadValidator
         UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.',
     ];
 
+    /**
+     * @param list<string> $allowedMimeTypes
+     */
     public function __construct(
         private readonly array $allowedMimeTypes,
         private readonly int $maxFileSize
@@ -25,7 +28,7 @@ final class UploadValidator
     /**
      * Validate a single uploaded file.
      *
-     * @param array $file File array from $_FILES
+     * @param array{name: string, type: string, tmp_name: string, error: int, size: int} $file File array from $_FILES
      * @return void
      * @throws ValidationException If validation fails
      */
@@ -41,7 +44,7 @@ final class UploadValidator
     /**
      * Validate batch upload constraints.
      *
-     * @param array $files      Files array from $_FILES
+     * @param array{name: array<string>, size: array<int>} $files Files array from $_FILES
      * @param int   $maxFiles   Maximum number of files allowed
      * @param int   $maxTotalSize Maximum total size allowed
      * @return void
@@ -71,7 +74,7 @@ final class UploadValidator
      * Upload a validated file to target directory with sequential naming.
      *
      * @param string $targetDir Target directory path
-     * @param array  $file      File array from $_FILES
+     * @param array{name: string, type: string, tmp_name: string, error: int, size: int} $file File array from $_FILES
      * @return string           Final file path after upload
      * @throws RuntimeException If upload fails
      */
@@ -96,8 +99,8 @@ final class UploadValidator
      * Normalize $_FILES batch payloads so both `images[]` and a single `images`
      * field can be processed consistently.
      *
-     * @param array $files Files array from $_FILES
-     * @return array Normalized files array with list values for all keys
+     * @param array<string, mixed> $files Files array from $_FILES
+     * @return array{name: array<string>, type: array<string>, tmp_name: array<string>, error: array<int>, size: array<int>} Normalized files array with list values for all keys
      * @throws ValidationException If the payload shape is invalid
      */
     public static function normalizeBatchFiles(array $files): array
@@ -127,7 +130,13 @@ final class UploadValidator
             }
         }
 
-        return $files;
+        return [
+            'name' => $files['name'],
+            'type' => $files['type'],
+            'tmp_name' => $files['tmp_name'],
+            'error' => $files['error'],
+            'size' => $files['size'],
+        ];
     }
 
     private function checkUploadError(int $errorCode): void

@@ -57,8 +57,9 @@ echo "OK\n";
 // Test 6: Check content-type header
 echo "  - Verify JSON content-type... ";
 $response = ApiTestHelpers::get('/api/list/', ['path' => '']);
+$contentType = $response['headers']['Content-Type'] ?? '';
 ApiTestHelpers::assertTrue(
-    str_contains($response['headers']['Content-Type'] ?? '', 'application/json'),
+    is_string($contentType) && str_contains($contentType, 'application/json'),
     'Content-Type is application/json'
 );
 echo "OK\n";

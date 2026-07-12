@@ -17,8 +17,8 @@ mkdir($sourceDir, 0777, true);
 mkdir($destDir,   0777, true);
 
 // Resolve real paths for accurate comparisons
-$realSourceDir = realpath($sourceDir);
-$realDestDir   = realpath($destDir);
+$realSourceDir = realpath($sourceDir) ?: $sourceDir;
+$realDestDir   = realpath($destDir) ?: $destDir;
 
 // Create a test file to move
 $file1 = $realSourceDir . '/test1.txt';

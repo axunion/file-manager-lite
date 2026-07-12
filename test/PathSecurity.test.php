@@ -116,7 +116,7 @@ $seqDir = sys_get_temp_dir() . '/seq_' . uniqid();
 mkdir($seqDir, 0777, true);
 
 // Resolve real path of seqDir for accurate comparisons
-$realSeqDir = realpath($seqDir);
+$realSeqDir = realpath($seqDir) ?: $seqDir;
 
 // 10. Initial candidate
 $path1 = PathSecurity::constructSequentialFilePath($seqDir, 'file.txt', function (string $path): void {

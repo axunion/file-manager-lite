@@ -12,7 +12,7 @@ require_once __DIR__ . '/../src/bootstrap.php';
 // Setup temporary directory
 $uploadDir = sys_get_temp_dir() . '/upload_test_' . uniqid();
 mkdir($uploadDir, 0777, true);
-$realUploadDir = realpath($uploadDir);
+$realUploadDir = realpath($uploadDir) ?: $uploadDir;
 
 $validator = new UploadValidator(
     allowedMimeTypes: ['image/jpeg', 'image/png'],

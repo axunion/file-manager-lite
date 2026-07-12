@@ -54,7 +54,10 @@ final class PathSecurity
     public static function validateFileName(string $fileName): void
     {
         if (class_exists('Normalizer')) {
-            $fileName = \Normalizer::normalize($fileName, \Normalizer::FORM_C);
+            $normalized = \Normalizer::normalize($fileName, \Normalizer::FORM_C);
+            if ($normalized !== false) {
+                $fileName = $normalized;
+            }
         }
 
         if ($fileName === '') {

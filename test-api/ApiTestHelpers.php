@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 /**
  * Helper functions for API testing
+ *
+ * @phpstan-type ApiResponse array{code: int, headers: array<string, string|list<string>>, body: string, json: mixed}
  */
 final class ApiTestHelpers
 {
@@ -48,6 +50,9 @@ final class ApiTestHelpers
 
     /**
      * Send GET request
+     *
+     * @param array<string, mixed> $params
+     * @return ApiResponse
      */
     public static function get(string $endpoint, array $params = []): array
     {
@@ -65,7 +70,7 @@ final class ApiTestHelpers
 
         $response = curl_exec($ch);
 
-        if ($response === false) {
+        if (!is_string($response)) {
             $err = curl_error($ch);
             curl_close($ch);
             throw new RuntimeException('cURL GET error: ' . $err);
@@ -88,6 +93,9 @@ final class ApiTestHelpers
 
     /**
      * Send POST request with form data
+     *
+     * @param array<string, mixed> $data
+     * @return ApiResponse
      */
     public static function post(string $endpoint, array $data = []): array
     {
@@ -105,7 +113,7 @@ final class ApiTestHelpers
 
         $response = curl_exec($ch);
 
-        if ($response === false) {
+        if (!is_string($response)) {
             $err = curl_error($ch);
             curl_close($ch);
             throw new RuntimeException('cURL POST error: ' . $err);
@@ -128,6 +136,10 @@ final class ApiTestHelpers
 
     /**
      * Send POST request with multipart/form-data (for file uploads)
+     *
+     * @param array<string, mixed> $fields
+     * @param array<string, string|list<string>> $files
+     * @return ApiResponse
      */
     public static function postMultipart(string $endpoint, array $fields = [], array $files = []): array
     {
@@ -163,7 +175,7 @@ final class ApiTestHelpers
 
         $response = curl_exec($ch);
 
-        if ($response === false) {
+        if (!is_string($response)) {
             $error = curl_error($ch);
             curl_close($ch);
             throw new RuntimeException("cURL multipart error: $error");
@@ -186,11 +198,13 @@ final class ApiTestHelpers
 
     /**
      * Parse HTTP headers into associative array
+     *
+     * @return array<string, string|list<string>>
      */
     private static function parseHeaders(string $headerString): array
     {
         $headers = [];
-        $lines = preg_split('/\r?\n/', $headerString);
+        $lines = preg_split('/\r?\n/', $headerString) ?: [];
 
         foreach ($lines as $line) {
             if ($line === '' || strpos($line, ':') === false) {
@@ -218,6 +232,8 @@ final class ApiTestHelpers
 
     /**
      * Assert that response is successful
+     *
+     * @param ApiResponse $response
      */
     public static function assertSuccess(array $response, string $message = ''): void
     {
@@ -242,6 +258,8 @@ final class ApiTestHelpers
 
     /**
      * Assert that response is an error
+     *
+     * @param ApiResponse $response
      */
     public static function assertError(array $response, int $expectedCode = 400, string $message = ''): void
     {
@@ -266,7 +284,7 @@ final class ApiTestHelpers
     /**
      * Assert that value equals expected
      */
-    public static function assertEquals($expected, $actual, string $message = ''): void
+    public static function assertEquals(mixed $expected, mixed $actual, string $message = ''): void
     {
         $prefix = $message ? "$message: " : '';
         if ($expected !== $actual) {
@@ -278,6 +296,8 @@ final class ApiTestHelpers
 
     /**
      * Assert that array contains key
+     *
+     * @param array<mixed> $array
      */
     public static function assertArrayHasKey(string $key, array $array, string $message = ''): void
     {

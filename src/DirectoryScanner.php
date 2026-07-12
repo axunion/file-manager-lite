@@ -60,6 +60,7 @@ final class DirectoryScanner
 
         $items = [];
 
+        /** @var SplFileInfo $info */
         foreach ($iterator as $info) {
             // Skip symlinks completely
             if ($info->isLink()) {

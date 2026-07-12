@@ -6,6 +6,13 @@ on:
     paths:
       - 'src/**'
       - 'public/**'
+      - 'test/**'
+      - 'test-api/**'
+      - '.github/workflows/**'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpstan.neon'
+      - 'phpstan-bootstrap.php'
   workflow_dispatch:
     inputs:
       dry-run:
@@ -17,7 +24,11 @@ on:
           - true
           - false
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     env:
       SRC_DIR: ${{ secrets.SRC_DIR }}

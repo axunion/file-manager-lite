@@ -24,12 +24,25 @@ Every endpoint returns JSON with a `status` field:
 { "status": "error", "message": "Human-readable description" }
 ```
 
-HTTP status codes: `200` success, `400` invalid input, `405` wrong method, `500` server error.
+HTTP status codes: `200` success, `400` invalid input, `401` missing/invalid API key, `405` wrong method, `500` server error.
+
+## Authentication
+
+Optional. When the server has an API key configured (in `src/config.local.php`),
+every request must include it in the `X-Api-Key` header; servers without a
+configured key accept requests without it.
+
+```js
+const API_KEY = "";  // set only when the server has an API key configured
+```
 
 ## Common Error Handling
 
 ```js
 async function apiFetch(url, options = {}) {
+  if (API_KEY) {
+    options.headers = { ...options.headers, "X-Api-Key": API_KEY };
+  }
   const res = await fetch(url, options);
   const data = await res.json();
   if (data.status === "error") {

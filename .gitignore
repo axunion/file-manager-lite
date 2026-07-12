@@ -7,6 +7,9 @@ public/data/directory/*
 public/trash/*
 !public/trash/.gitkeep
 
+# Server-local configuration (placed manually on the server)
+config.local.php
+
 # Logs
 logs
 *.log

@@ -32,6 +32,9 @@ final class ApiTestHelpers
     /** Default timeout (seconds) for HTTP requests. */
     private static int $defaultTimeout = 5;
 
+    /** API key sent as X-Api-Key header when set via setApiKey(). */
+    private static ?string $apiKey = null;
+
     // Initialize configurable defaults
     private static function ensureInitialized(): void
     {
@@ -58,6 +61,7 @@ final class ApiTestHelpers
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Don't follow redirects
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$defaultTimeout);
+        self::applyApiKeyHeader($ch);
 
         $response = curl_exec($ch);
 
@@ -97,6 +101,7 @@ final class ApiTestHelpers
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Don't follow redirects
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$defaultTimeout);
+        self::applyApiKeyHeader($ch);
 
         $response = curl_exec($ch);
 
@@ -154,6 +159,7 @@ final class ApiTestHelpers
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Don't follow redirects
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$defaultTimeout);
+        self::applyApiKeyHeader($ch);
 
         $response = curl_exec($ch);
 
@@ -595,6 +601,26 @@ final class ApiTestHelpers
     public static function setBaseUrl(string $url): void
     {
         self::$baseUrl = rtrim($url, '/');
+    }
+
+    /**
+     * Set the API key sent as X-Api-Key on every request; null disables it.
+     */
+    public static function setApiKey(?string $key): void
+    {
+        self::$apiKey = $key;
+    }
+
+    /**
+     * Add the X-Api-Key header to a cURL handle when a key is configured.
+     *
+     * @param CurlHandle $ch cURL handle
+     */
+    private static function applyApiKeyHeader($ch): void
+    {
+        if (self::$apiKey !== null) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-Api-Key: ' . self::$apiKey]);
+        }
     }
 
     /**

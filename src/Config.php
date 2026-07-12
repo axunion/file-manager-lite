@@ -89,7 +89,7 @@ final class Config
     /**
      * Allowed headers for CORS requests.
      */
-    public const CORS_ALLOWED_HEADERS = 'Content-Type, Authorization';
+    public const CORS_ALLOWED_HEADERS = 'Content-Type, Authorization, X-Api-Key';
 
     /**
      * Max age for CORS preflight cache (in seconds).

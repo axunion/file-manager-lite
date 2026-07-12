@@ -99,6 +99,50 @@ if (!defined('API_DATA_DIR') || !defined('API_TRASH_DIR')) {
     }
 }
 
+// Read a string value from the optional src/config.local.php override file.
+// The file is gitignored and placed manually on the server; it must return
+// an array (e.g. ['api_key' => '...', 'cors_allowed_origin' => '...']).
+function localConfig(string $key): ?string
+{
+    static $config = null;
+
+    if ($config === null) {
+        $file = __DIR__ . '/config.local.php';
+        $loaded = is_file($file) ? require $file : [];
+        $config = is_array($loaded) ? $loaded : [];
+    }
+
+    $value = $config[$key] ?? null;
+
+    return is_string($value) && $value !== '' ? $value : null;
+}
+
+// Constant-time API key comparison
+function isApiKeyValid(string $configuredKey, ?string $providedKey): bool
+{
+    return $providedKey !== null && hash_equals($configuredKey, $providedKey);
+}
+
+// Require a valid X-Api-Key header when a key is configured.
+// The API_KEY environment variable (used by tests/CI) takes precedence over
+// config.local.php; an empty env value falls through to the local config.
+// No configured key means authentication is disabled.
+function requireApiKey(): void
+{
+    $envKey = getenv('API_KEY');
+    $configured = ($envKey !== false && $envKey !== '') ? $envKey : localConfig('api_key');
+
+    if ($configured === null) {
+        return;
+    }
+
+    $provided = $_SERVER['HTTP_X_API_KEY'] ?? null;
+
+    if (!is_string($provided) || !isApiKeyValid($configured, $provided)) {
+        sendError('Invalid or missing API key.', 401);
+    }
+}
+
 // CORS handling (skip in test mode)
 function handleCors(): void
 {
@@ -207,7 +251,10 @@ function handleError(Throwable $e): void
     sendError('An unexpected error occurred.', 500);
 }
 
-// Initialize CORS handling (skip in test mode)
+// Initialize CORS handling and authentication (skip in test mode).
+// Order matters: handleCors() exits early for OPTIONS, keeping CORS
+// preflight requests unauthenticated.
 if (!defined('TESTING_MODE')) {
     handleCors();
+    requireApiKey();
 }

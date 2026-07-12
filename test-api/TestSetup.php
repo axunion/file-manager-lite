@@ -19,16 +19,20 @@ const PUBLIC_DIR = __DIR__ . '/../public';
 /**
  * Start PHP built-in server
  *
+ * @param int    $port     Port to listen on
+ * @param string $extraEnv Extra environment assignments prepended to the
+ *                         server command (e.g. 'API_KEY=secret')
  * @return int Server process ID
  */
-function startTestServer(): int
+function startTestServer(int $port = SERVER_PORT, string $extraEnv = ''): int
 {
     echo "Starting PHP built-in server...\n";
 
     $serverCmd = sprintf(
-        'TESTING=true php -S %s:%d -t %s > /dev/null 2>&1 & echo $!',
+        '%sTESTING=true php -S %s:%d -t %s > /dev/null 2>&1 & echo $!',
+        $extraEnv === '' ? '' : $extraEnv . ' ',
         SERVER_HOST,
-        SERVER_PORT,
+        $port,
         escapeshellarg(PUBLIC_DIR)
     );
 
@@ -49,7 +53,7 @@ function startTestServer(): int
         $attempt++;
         usleep(500000); // 500ms
 
-        $ch = curl_init('http://' . SERVER_HOST . ':' . SERVER_PORT);
+        $ch = curl_init('http://' . SERVER_HOST . ':' . $port);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 1);

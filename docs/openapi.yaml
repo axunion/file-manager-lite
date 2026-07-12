@@ -24,6 +24,15 @@ info:
     e.g. `.htaccess`) are rejected wherever a filename is supplied
     (upload, upload-images, rename, move, delete).
 
+    **Authentication**: optional. When the server has an API key configured
+    (via `src/config.local.php`), every request must send it in the
+    `X-Api-Key` header; otherwise requests fail with HTTP 401. Servers
+    without a configured key accept unauthenticated requests.
+
+security:
+  - apiKey: []
+  - {}
+
 paths:
   /list/:
     get:
@@ -69,6 +78,8 @@ paths:
                     name: readme.txt
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
@@ -126,6 +137,8 @@ paths:
                 filename: report.pdf
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
@@ -202,6 +215,8 @@ paths:
                   - photo2_1.jpg
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
@@ -254,6 +269,8 @@ paths:
                 filename: new-name.txt
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
@@ -298,6 +315,8 @@ paths:
                 filename: old-report.pdf
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
@@ -350,10 +369,21 @@ paths:
                 filename: report.pdf
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "405":
           $ref: "#/components/responses/MethodNotAllowed"
 
 components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: >
+        Required only when the server has an API key configured in
+        `src/config.local.php`.
+
   schemas:
     StatusSuccess:
       type: object
@@ -432,6 +462,15 @@ components:
         - Invalid or disallowed file type (upload endpoints)
         - File size exceeds the limit (upload endpoints)
         - Filename conflict — only for `/rename/` (other endpoints auto-resolve)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    Unauthorized:
+      description: >
+        Missing or invalid `X-Api-Key` header. Only returned when the server
+        has an API key configured.
       content:
         application/json:
           schema:

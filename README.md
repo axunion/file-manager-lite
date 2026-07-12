@@ -71,6 +71,30 @@ The whole `public/` directory is uploaded into `PUBLIC_DIR`, so the API URL pref
 
 A manual dry-run is available under **Actions → Deploy → Run workflow** (dry-run defaults to `true`).
 
+### Configuration (API key & CORS)
+
+Server-local settings live in `src/config.local.php` — gitignored, excluded from
+deploy, and placed manually on the server (via FTP) once:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+return [
+    'api_key' => 'replace-with-a-long-random-secret',
+    'cors_allowed_origin' => 'https://example.com', // optional; defaults to '*'
+];
+```
+
+- When `api_key` is set, every request must send it in the `X-Api-Key` header
+  (CORS preflight `OPTIONS` requests are exempt); otherwise the API responds
+  with HTTP 401. Without the file, authentication is disabled and the API
+  works as before.
+- `cors_allowed_origin` overrides the `Access-Control-Allow-Origin` header.
+- Note: creating this file with an `api_key` in a local working copy makes the
+  `test-api` suite fail with 401s — keep it server-only.
+
 ## Development
 
 ### Running Tests

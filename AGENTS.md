@@ -39,6 +39,7 @@ A lightweight, security-first PHP API for file management operations. No externa
 - Verify uploads with `is_uploaded_file()` before moving
 - Never access `$_GET`, `$_POST`, `$_FILES` directly in endpoints — use `getInput()` and the bootstrap helpers
 - Never expose internal filesystem paths in responses or error messages
+- Authentication is optional: bootstrap's `requireApiKey()` enforces the `X-Api-Key` header only when a key is configured (env `API_KEY` or server-local `src/config.local.php`)
 
 ## Commands
 
@@ -169,3 +170,4 @@ FTP deploy via GitHub Actions on push to `main`. Target paths come from secrets,
 
 - `TESTING=true` - Disables HTTPS redirects (set automatically by test runner)
 - `TEST_SERVER_MANAGED=1` - Disables auto-server startup (used by run-all.php)
+- `API_KEY` - Enables API key authentication; takes precedence over `src/config.local.php` (used by auth tests)

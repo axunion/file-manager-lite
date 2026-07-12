@@ -58,3 +58,4 @@ jobs:
             data/**
             trash/**
             .gitkeep
+            config.local.php

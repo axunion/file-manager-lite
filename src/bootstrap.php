@@ -150,7 +150,12 @@ function handleCors(): void
         return;
     }
 
-    header('Access-Control-Allow-Origin: ' . Config::CORS_ALLOWED_ORIGIN);
+    $origin = localConfig('cors_allowed_origin') ?? Config::CORS_ALLOWED_ORIGIN;
+
+    header('Access-Control-Allow-Origin: ' . $origin);
+    if ($origin !== '*') {
+        header('Vary: Origin');
+    }
     header('Access-Control-Allow-Methods: ' . Config::CORS_ALLOWED_METHODS);
     header('Access-Control-Allow-Headers: ' . Config::CORS_ALLOWED_HEADERS);
     header('Access-Control-Max-Age: ' . Config::CORS_MAX_AGE);

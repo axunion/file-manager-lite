@@ -77,7 +77,8 @@ final class Config
      * Allowed origins for CORS requests.
      *
      * WARNING: '*' allows all origins and is NOT recommended for production.
-     * Always specify exact origins in production (e.g., 'https://example.com').
+     * Set 'cors_allowed_origin' in src/config.local.php to override this
+     * per environment (e.g., 'https://example.com').
      */
     public const CORS_ALLOWED_ORIGIN = '*';
 
